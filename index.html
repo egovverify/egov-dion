@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pambansang ID eVerify</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+      color: #111;
+    }
+
+    /* HEADER */
+    header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header img {
+      height: 40px;
+    }
+
+    /* MENU */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropbtn {
+      background: #1e40af;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .dropbtn:hover {
+      background: #1d4ed8;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 110%;
+      background: white;
+      min-width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 12px 14px;
+      text-decoration: none;
+      color: #111;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .dropdown-content a:hover {
+      background: #f3f4f6;
+      color: #1e40af;
+    }
+
+    /* MAIN */
+    main {
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    /* CARD CONTAINER */
+    .card-container {
+      perspective: 1200px;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    /* FIX: remove fixed height bug on mobile */
+    .card {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+      cursor: pointer;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: white;
+      overflow: hidden;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+
+      transform: translateZ(0);
+    }
+
+    /* FRONT SCAN EFFECT */
+    .front::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(0,255,255,0.15) 50%, transparent 70%);
+      animation: scan 3.5s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scan {
+      0% { transform: translateX(-60%) rotate(25deg); }
+      100% { transform: translateX(60%) rotate(25deg); }
+    }
+
+    /* IMAGE FIX (mobile-safe scaling) */
+    .front img,
+    .back img {
+      width: min(85%, 320px);
+      max-height: 70%;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+      position: relative;
+      z-index: 1;
+    }
+
+    .front h2,
+    .back h2 {
+      margin-top: 10px;
+      font-size: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .front p,
+    .back p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+      position: relative;
+      z-index: 1;
+      max-width: 80%;
+    }
+
+    /* BACK SIDE */
+    .back {
+      transform: rotateY(180deg);
+      background: #FFFFFF;
+      color: white;
+    }
+
+    .back p {
+      color: #cbd5e1;
+    }
+
+    /* MOBILE FIXES */
+    @media (max-width: 600px) {
+      header {
+        padding: 12px 16px;
+      }
+
+      main {
+        padding: 20px 10px;
+      }
+
+      .card {
+        aspect-ratio: 3 / 2.2;
+      }
+
+      .card-face {
+        padding: 14px;
+      }
+
+      .front h2,
+      .back h2 {
+        font-size: 18px;
+      }
+
+      .front img,
+      .back img {
+        max-height: 60%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="snipping.png" alt="eVerify Logo" />
+
+  <div class="dropdown">
+    <button class="dropbtn" onclick="toggleMenu()">☰ Menu</button>
+    <div class="dropdown-content" id="menu">
+      <a href="index.html">Bersipikasyon ng Customer</a>
+      <a href="#">Profile ng Organisasyon</a>
+      <a href="#">Sistema ng Aplikasyon</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card-container">
+    <div class="card" id="card" onclick="flipCard()">
+
+      <!-- FRONT -->
+      <div class="card-face front">
+        <img src="myid.jpg" alt="Philippine National ID" />
+        <h2>Pambansang ID</h2>
+        <p>Tap to flip for details</p>
+      </div>
+
+      <!-- BACK -->
+      <div class="card-face back">
+        <img src="back.png" alt="Back of ID" />
+        <h2>ID Details</h2>
+        <p>This is a secure digital representation of your Philippine Identification Card. Tap again to return.</p>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+  function flipCard() {
+    document.getElementById("card").classList.toggle("flipped");
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  window.addEventListener("click", function(e) {
+    const menu = document.getElementById("menu");
+    const button = document.querySelector(".dropbtn");
+
+    if (!button.contains(e.target) && !menu.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>
